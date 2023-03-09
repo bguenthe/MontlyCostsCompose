@@ -36,6 +36,10 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         costsRepository = CostsRepository(applicationContext)
+
+//        costsRepository.saveConcreteIncome(3498.63)
+//        costsRepository.deleteByIds()
+
         constants = costsRepository.getConstants()
         costsRepository.subscribeServerCostsMQTT()
         costsRepository.subscribeServerIncomeMQTT()

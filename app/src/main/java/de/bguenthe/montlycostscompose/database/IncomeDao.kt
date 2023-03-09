@@ -30,4 +30,7 @@ interface IncomeDao {
 
     @Query("select * from income where deleted = 0 and CAST(strftime('%Y', incomeDateTime / 1000, 'unixepoch', 'localtime') as int) = :year and CAST(strftime('%m', incomeDateTime / 1000, 'unixepoch', 'localtime') as int) = :month")
     fun getMonthlyIncome(year: Int, month: Int): Income?
+
+    @Query("delete from income where id in (1726,1727,1728,1729,1730,1731,1732,1733)")
+    fun deleteById()
 }

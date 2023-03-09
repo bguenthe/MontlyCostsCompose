@@ -1,6 +1,5 @@
 package de.bguenthe.montlycostscompose
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,8 +14,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,7 +35,6 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import kotlinx.coroutines.flow.collect
 
 var firstRun = true
 
@@ -46,7 +45,7 @@ fun TopOfHomescreen(costsRepository: CostsRepository, newValuePressed: (Boolean)
 
     val constants = costsRepository.getConstants()
 
-    InputSection(value, onValueChange = { value = it }, comment, onBezeichnungChange = { comment = it })
+    InputSection(value, onValueChange = { value = it }, comment, onCommentChange = { comment = it })
     ButtonSection(constants, onButtonClicked = {
         if (value != "") {
             costsRepository.saveCosts(it, value, comment)
@@ -59,7 +58,7 @@ fun TopOfHomescreen(costsRepository: CostsRepository, newValuePressed: (Boolean)
 
 @Composable
 fun InputSection(
-    value: String, onValueChange: (String) -> Unit, bezeichnung: String, onBezeichnungChange: (String) -> Unit
+    value: String, onValueChange: (String) -> Unit, comment: String, onCommentChange: (String) -> Unit
 ) {
     Row(modifier = Modifier.padding(10.dp)) {
         OutlinedTextField(
@@ -72,9 +71,9 @@ fun InputSection(
             textStyle = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold),
         )
         OutlinedTextField(
-            value = bezeichnung,
+            value = comment,
             singleLine = true,
-            onValueChange = onBezeichnungChange,
+            onValueChange = onCommentChange,
             label = { Text("Comment") })
     }
 }
@@ -89,12 +88,12 @@ fun ButtonSection(constants: LinkedHashMap<String, Constants.Consts>, onButtonCl
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.padding(start = 1.dp).clickable(onClick = {
-                        selectedChipIndex = it
-                        onButtonClicked(constants.keys.elementAt(it))
-                    }).clip(RoundedCornerShape(5.dp)).background(
-                        if (selectedChipIndex == it) ButtonBlue
-                        else DarkerButtonBlue
-                    ).padding(15.dp)
+                    selectedChipIndex = it
+                    onButtonClicked(constants.keys.elementAt(it))
+                }).clip(RoundedCornerShape(5.dp)).background(
+                    if (selectedChipIndex == it) ButtonBlue
+                    else DarkerButtonBlue
+                ).padding(15.dp)
             ) {
                 Text(text = constants.values.elementAt(it).label, fontSize = 20.sp, color = TextWhite)
             }

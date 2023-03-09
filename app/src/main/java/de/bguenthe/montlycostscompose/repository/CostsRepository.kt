@@ -279,6 +279,28 @@ class CostsRepository {
         saveCosts("DELETE", costs)
     }
 
+    fun saveConcreteIncome(amount: Double) {
+        val localDate = LocalDateTime.of(2023, 1, 1, 0, 0, 0)
+        val monthIncome =
+            database.incomeDao().getMonthlyIncome(2023, 1)
+        if (monthIncome == null) { // neu
+            val income = Income(localDate, amount)
+            income.mqttsend = saveIncomeToMQTT(income)
+            database.incomeDao().add(income)
+        } else { // income update
+            // altes auf dem server löschen
+            monthIncome.deleted = true
+            monthIncome.mqttsend = saveIncomeToMQTT(monthIncome)
+            database.incomeDao().update(monthIncome)
+
+            // neues schreiben
+            val income = Income(localDate, amount)
+            income.mqttsend = saveIncomeToMQTT(income)
+            database.incomeDao().add(income)
+            val i = 0
+        }
+    }
+
     // INCOME
     fun saveIncome(amount: Double) {
         val localDate = LocalDateTime.of(LocalDateTime.now().year, LocalDateTime.now().month, 1, 0, 0, 0)
@@ -341,5 +363,9 @@ class CostsRepository {
 
     fun getNumberOfStoresIncomes(): Long {
         return database.incomeDao().count
+    }
+
+    fun deleteByIds() {
+        database.incomeDao().deleteById()
     }
 }

@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "de.bguenthe.montlycostscompose"
@@ -24,13 +24,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.1.0-rc02"
+        kotlinCompilerExtensionVersion "1.4.3"
         kotlinCompilerVersion '1.6.10'
     }
     packagingOptions {
@@ -41,11 +40,12 @@ android {
 
         }
     }
+    namespace 'de.bguenthe.montlycostscompose'
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-runtime-ktx:2.5.1'
-    def room_version = "2.5.0-alpha02"
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.5.3'
+    def room_version = "2.5.0"
     def lifecycle_version = '2.4.0'
 
     implementation 'androidx.activity:activity-compose:1.6.0-alpha05'
