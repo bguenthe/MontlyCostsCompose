@@ -38,14 +38,26 @@ fun SumsScreen(costsRepository: CostsRepository) {
 
         val allCostsSum = costsRepository.getAllCostsSum()
         val allIncomeSum = costsRepository.getAllIncomeSum()
+        val months = costsRepository.getNumberOfMonthsToShow()
+        val monthlyAverageIncome = allIncomeSum / months
+
         val diff =
-            ((allIncomeSum - allCostsSum) / costsRepository.getNumberOfMonthsToShow()) - (289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/)
+            ((allIncomeSum - allCostsSum) / months) - (289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/)
         val i = 1
 
+        Row {
+            Text("Monatliches Netto: ")
+            Text(text = monthlyAverageIncome.toString())
+        }
+        Row {
+            Text("Monatliche Ausgaben: ")
+            Text(text = ((allCostsSum + 289f + 508f) / months).toString())
+        }
         Row {
             Text("Monatliches Geld über: ")
             Text(text = diff.toString())
         }
+
         AndroidView(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.8f), factory = { ctx ->
