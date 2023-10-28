@@ -40,6 +40,7 @@ fun SumsScreen(costsRepository: CostsRepository) {
         val allIncomeSum = costsRepository.getAllIncomeSum()
         val diff =
             ((allIncomeSum - allCostsSum) / costsRepository.getNumberOfMonthsToShow()) - (289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/)
+        val i = 1
 
         Row {
             Text("Monatliches Geld über: ")

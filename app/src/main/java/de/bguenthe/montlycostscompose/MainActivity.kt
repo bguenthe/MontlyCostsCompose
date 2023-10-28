@@ -37,8 +37,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         costsRepository = CostsRepository(applicationContext)
 
-//        costsRepository.saveConcreteIncome(3498.63)
-//        costsRepository.deleteByIds()
+  costsRepository.saveConcreteIncome(3313.34)
+        //costsRepository.deleteByIds()
+        //val t = costsRepository.getAllCostsByMonthAndType(2023,8,"sonst")
 
         constants = costsRepository.getConstants()
         costsRepository.subscribeServerCostsMQTT()

@@ -40,6 +40,9 @@ interface CostsDao {
     @Query("select * from Costs where deleted = 0 AND CAST(strftime('%Y', recordDateTime / 1000, 'unixepoch') as int) = :year and CAST(strftime('%m', recordDateTime / 1000, 'unixepoch') as int) = :month order by recordDateTime DESC")
     fun getAllCostsByMonth(year: Int, month: Int): List<Costs>
 
+    @Query("select * from Costs where deleted = 0 AND CAST(strftime('%Y', recordDateTime / 1000, 'unixepoch') as int) = :year and CAST(strftime('%m', recordDateTime / 1000, 'unixepoch') as int) = :month and type = :type order by recordDateTime DESC")
+    fun getAllCostsByMonthAndType(year: Int, month: Int, type: String): List<Costs>
+
     @Query("select sum(costs) from Costs where deleted = 0")
     fun getAllCostsSum(): Double
 

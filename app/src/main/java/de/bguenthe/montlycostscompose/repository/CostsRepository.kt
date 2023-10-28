@@ -280,9 +280,11 @@ class CostsRepository {
     }
 
     fun saveConcreteIncome(amount: Double) {
-        val localDate = LocalDateTime.of(2023, 1, 1, 0, 0, 0)
+        val lYear = 2023
+        val lMonth = 9
+        val localDate = LocalDateTime.of(lYear, lMonth, 1, 0, 0, 0)
         val monthIncome =
-            database.incomeDao().getMonthlyIncome(2023, 1)
+            database.incomeDao().getMonthlyIncome(lYear, lMonth)
         if (monthIncome == null) { // neu
             val income = Income(localDate, amount)
             income.mqttsend = saveIncomeToMQTT(income)
@@ -367,5 +369,9 @@ class CostsRepository {
 
     fun deleteByIds() {
         database.incomeDao().deleteById()
+    }
+
+    fun getAllCostsByMonthAndType(year: Int, month: Int, type: String): List<Costs> {
+        return database.costsDao().getAllCostsByMonthAndType(year, month, type)
     }
 }
