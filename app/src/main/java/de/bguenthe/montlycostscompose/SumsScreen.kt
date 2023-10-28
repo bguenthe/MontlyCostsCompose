@@ -12,8 +12,6 @@ import de.bguenthe.montlycostscompose.repository.CostsRepository
 @Composable
 fun SumsScreen(costsRepository: CostsRepository) {
     Column(modifier = Modifier.fillMaxSize()) {
-        val constants = costsRepository.getConstants()
-        val barchartlist = ArrayList<BarchartObject>()
         lateinit var costs: List<SumsPerType>
 
         val allCosts = costsRepository.database.costsDao().getAll
@@ -40,10 +38,12 @@ fun SumsScreen(costsRepository: CostsRepository) {
         val allIncomeSum = costsRepository.getAllIncomeSum()
         val months = costsRepository.getNumberOfMonthsToShow()
         val monthlyAverageIncome = allIncomeSum / months
+        val fixPostbank = 508
+        val fixFix = 289
+        val fixSums = fixPostbank+fixFix
 
         val diff =
-            ((allIncomeSum - allCostsSum) / months) - (289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/)
-        val i = 1
+            ((allIncomeSum - allCostsSum) / months) - (fixSums)
 
         Row {
             Text("Monatliches Netto: ")
@@ -51,7 +51,11 @@ fun SumsScreen(costsRepository: CostsRepository) {
         }
         Row {
             Text("Monatliche Ausgaben: ")
-            Text(text = ((allCostsSum + 289f + 508f) / months).toString())
+            Text(text = ((allCostsSum + fixSums) / months).toString())
+        }
+        Row {
+            Text("Monatlich FIX: ")
+            Text(text = "$fixPostbank + $fixFix")
         }
         Row {
             Text("Monatliches Geld über: ")
@@ -65,7 +69,6 @@ fun SumsScreen(costsRepository: CostsRepository) {
         }, update = { chartEngine ->
             val constants = costsRepository.getConstants()
             val barchartlist = ArrayList<BarchartObject>()
-            lateinit var costs: List<SumsPerType>
 
             val allCosts = costsRepository.database.costsDao().getAll
             val firstYear = allCosts[0].recordDateTime?.year
@@ -73,7 +76,7 @@ fun SumsScreen(costsRepository: CostsRepository) {
             val lasttYear = allCosts[allCosts.size - 1].recordDateTime?.year
             val lastMonth = allCosts[allCosts.size - 1].recordDateTime?.month?.value
 
-            costs = costsRepository.database.costsDao().getSumsByType()
+            val costs: List<SumsPerType> = costsRepository.database.costsDao().getSumsByType()
 
             for (cost in costs) {
                 val f = ArrayList<Float>()
