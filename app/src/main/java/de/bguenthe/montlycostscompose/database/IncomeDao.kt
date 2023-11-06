@@ -33,4 +33,7 @@ interface IncomeDao {
 
     @Query("delete from income where id in (1726,1727,1728,1729,1730,1731,1732,1733)")
     fun deleteById()
+
+    @Query("delete from income where deleted = 1")
+    fun deleteAllDeletedIncome()
 }

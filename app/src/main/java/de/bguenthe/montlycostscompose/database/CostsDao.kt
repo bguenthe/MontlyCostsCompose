@@ -31,6 +31,9 @@ interface CostsDao {
     @Query("delete from Costs")
     fun deleteAll()
 
+    @Query("delete from Costs where deleted = 1")
+    fun deleteAllDeletedCosts()
+
     @Query("update costs set mqttsend = 0")
     fun resendAll()
 

@@ -82,6 +82,7 @@ fun SettingsScreen(costsRepository: CostsRepository) {
             modifier = Modifier
                 .padding(start = 1.dp, top = 1.dp, bottom = 1.dp)
                 .clickable(onClick = {
+                    costsRepository.deleteAllDeletedCosts()
                     costsRepository.saveAllCostsToServerMQTT()
                 })
                 .clip(RoundedCornerShape(10.dp))
@@ -95,6 +96,7 @@ fun SettingsScreen(costsRepository: CostsRepository) {
             modifier = Modifier
                 .padding(start = 1.dp, top = 1.dp, bottom = 1.dp)
                 .clickable(onClick = {
+                    costsRepository.deleteAllDeletedIncome()
                     costsRepository.saveAllIncomeToServerMQTT()
                 })
                 .clip(RoundedCornerShape(10.dp))
@@ -142,15 +144,6 @@ fun SettingsScreen(costsRepository: CostsRepository) {
         Row {
             Text("Number of Incomes  stored in the database: ")
             Text(text = numberOfIncomes.toString())
-        }
-
-        val allCostsSum = costsRepository.getAllCostsSum()
-        val allIncomeSum = costsRepository.getAllIncomeSum()
-        val diff = ((allIncomeSum - allCostsSum) / costsRepository.getNumberOfMonthsToShow()) - (289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/)
-
-        Row {
-            Text("Monatliches Geld über: ")
-            Text(text = diff.toString())
         }
     }
 }

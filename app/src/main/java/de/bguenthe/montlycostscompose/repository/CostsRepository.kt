@@ -162,7 +162,8 @@ class CostsRepository {
     fun sendMeServerCostsMQTT(): Boolean {
         if (clientconnected) {
             val publishResultFuture: CompletableFuture<Mqtt5PublishResult> =
-                client.publishWith().topic("monthlycosts/sendmeservercosts").qos(MqttQos.EXACTLY_ONCE)
+                client.publishWith().topic("monthlycosts/sendmeservercosts")
+                    .qos(MqttQos.EXACTLY_ONCE)
                     .payload("".toByteArray()).send()
             return true
         }
@@ -172,7 +173,8 @@ class CostsRepository {
     fun sendMeServerIncomeMQTT(): Boolean {
         if (clientconnected) {
             val publishResultFuture: CompletableFuture<Mqtt5PublishResult> =
-                client.publishWith().topic("monthlycosts/sendmeserverincome").qos(MqttQos.EXACTLY_ONCE)
+                client.publishWith().topic("monthlycosts/sendmeserverincome")
+                    .qos(MqttQos.EXACTLY_ONCE)
                     .payload("".toByteArray()).send()
             return true
         }
@@ -305,9 +307,11 @@ class CostsRepository {
 
     // INCOME
     fun saveIncome(amount: Double) {
-        val localDate = LocalDateTime.of(LocalDateTime.now().year, LocalDateTime.now().month, 1, 0, 0, 0)
+        val localDate =
+            LocalDateTime.of(LocalDateTime.now().year, LocalDateTime.now().month, 1, 0, 0, 0)
         val monthIncome =
-            database.incomeDao().getMonthlyIncome(LocalDateTime.now().year, LocalDateTime.now().monthValue)
+            database.incomeDao()
+                .getMonthlyIncome(LocalDateTime.now().year, LocalDateTime.now().monthValue)
         if (monthIncome == null) { // neu
             val income = Income(localDate, amount)
             income.mqttsend = saveIncomeToMQTT(income)
@@ -353,6 +357,14 @@ class CostsRepository {
 
     fun deleteAllIncome() {
         database.incomeDao().deleteAll()
+    }
+
+    fun deleteAllDeletedIncome() {
+        database.incomeDao().deleteAllDeletedIncome()
+    }
+
+    fun deleteAllDeletedCosts() {
+        database.costsDao().deleteAllDeletedCosts()
     }
 
     fun getMonthlySumOfCosts(year: Int, month: Int): List<SumsPerType> {
