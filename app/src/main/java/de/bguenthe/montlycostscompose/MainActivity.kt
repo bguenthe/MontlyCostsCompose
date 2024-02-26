@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         costsRepository = CostsRepository(applicationContext)
 
-  costsRepository.saveConcreteIncome(3313.34)
+        //costsRepository.saveConcreteIncome(3313.34)
         //costsRepository.deleteByIds()
         //val t = costsRepository.getAllCostsByMonthAndType(2023,8,"sonst")
 

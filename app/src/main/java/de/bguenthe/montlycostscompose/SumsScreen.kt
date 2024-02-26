@@ -15,6 +15,7 @@ fun SumsScreen(costsRepository: CostsRepository) {
         lateinit var costs: List<SumsPerType>
 
         val allCosts = costsRepository.database.costsDao().getAll
+        val numberOfMonthToShow = costsRepository.database.costsDao().numberOfMonthsToShow
         val firstYear = allCosts[0].recordDateTime?.year
         val firstMonth = allCosts[0].recordDateTime?.month?.value
         val lasttYear = allCosts[allCosts.size - 1].recordDateTime?.year
@@ -22,7 +23,7 @@ fun SumsScreen(costsRepository: CostsRepository) {
 
         costs = costsRepository.database.costsDao().getSumsByType()
 
-        val descriptionText = "Gesamtsummen ($firstYear-$firstMonth bis $lasttYear-$lastMonth)"
+        val descriptionText = "Gesamtsummen ($firstYear-$firstMonth bis $lasttYear-$lastMonth) sind $numberOfMonthToShow Monate"
         Row {
             Text(text = descriptionText)
         }
@@ -39,19 +40,19 @@ fun SumsScreen(costsRepository: CostsRepository) {
         val months = costsRepository.getNumberOfMonthsToShow()
         val monthlyAverageIncome = allIncomeSum / months
         val fixPostbank = 508
-        val fixFix = 289
+        val fixFix = 330.57f
         val fixSums = fixPostbank+fixFix
 
         val diff =
             ((allIncomeSum - allCostsSum) / months) - (fixSums)
 
         Row {
-            Text("Monatliches Netto: ")
+            Text("Durchschnittliches, monatliches Netto: ")
             Text(text = monthlyAverageIncome.toString())
         }
         Row {
-            Text("Monatliche Ausgaben: ")
-            Text(text = ((allCostsSum + fixSums) / months).toString())
+            Text("Durchschnittliche, monatliche Ausgaben: ")
+            Text(text = ((allCostsSum) / months).toString())
         }
         Row {
             Text("Monatlich FIX: ")

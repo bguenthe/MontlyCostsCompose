@@ -168,7 +168,7 @@ fun HorizontalPages(
             f.add(sums[0].value.toFloat()) // Alle Kosten zusammen
 
             // Fixkosten
-            val fixcosts = 289f /*fixkosten*/ + 508f /*Postbank  Schuldentilgung*/
+            val fixcosts = 330.57f /*fixkosten*/ + 508f /* Postbank  Schuldentilgung*/
             f.add(fixcosts)
 
             // Geld über Einkommen - Fixkosten - Kosten des Monats
