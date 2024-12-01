@@ -1,6 +1,5 @@
 package de.bguenthe.montlycostscompose
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,8 +13,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,15 +20,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import de.bguenthe.montlycostscompose.chart.ChartEngine
 import de.bguenthe.montlycostscompose.database.SumsPerType
 import de.bguenthe.montlycostscompose.repository.Constants
 import de.bguenthe.montlycostscompose.repository.CostsRepository
 import de.bguenthe.montlycostscompose.ui.theme.*
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -101,7 +96,6 @@ fun ButtonSection(constants: LinkedHashMap<String, Constants.Consts>, onButtonCl
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(costsRepository: CostsRepository, currentYearOfPage: (Int) -> Unit, currentMonthOfPage: (Int) -> Unit) {
     var newValuePressed by mutableStateOf(false)
@@ -116,22 +110,19 @@ fun HomeScreen(costsRepository: CostsRepository, currentYearOfPage: (Int) -> Uni
     }
 }
 
-@OptIn(InternalCoroutinesApi::class)
-@ExperimentalAnimationApi
-@ExperimentalPagerApi // HorizontalPager is experimental
 @Composable
 fun HorizontalPages(
     costsRepository: CostsRepository,
     newValuePressed: Boolean,
     currentYearOfPage: (Int) -> Unit,
-    currenMonthOfPage: (Int) -> Unit,
+    currentMonthOfPage: (Int) -> Unit,
 ) {
-
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
 
     val numberOfMonthsToShow = costsRepository.getNumberOfMonthsToShow()
     val constants = costsRepository.getConstants()
+
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState { numberOfMonthsToShow }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -139,11 +130,11 @@ fun HorizontalPages(
             val month =
                 LocalDate.now().minus((numberOfMonthsToShow - (page + 1)).toLong(), ChronoUnit.MONTHS).monthValue
             currentYearOfPage(year)
-            currenMonthOfPage(month)
+            currentMonthOfPage(month)
         }
     }
 
-    HorizontalPager(count = numberOfMonthsToShow, state = pagerState) { page ->
+    HorizontalPager(state = pagerState) { page ->
         // Our page content
         AndroidView(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f), factory = { ctx ->
             ChartEngine(ctx).apply {}
@@ -168,7 +159,7 @@ fun HorizontalPages(
             f.add(sums[0].value.toFloat()) // Alle Kosten zusammen
 
             // Fixkosten
-            val fixcosts = 330.57f /*fixkosten*/ + 508f /* Postbank  Schuldentilgung*/
+            val fixcosts = 219.24f /*fixkosten*/ + 508f /* Postbank  Schuldentilgung*/
             f.add(fixcosts)
 
             // Geld über Einkommen - Fixkosten - Kosten des Monats
